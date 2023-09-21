@@ -3,8 +3,7 @@ const { parse } = require('csv-parse');
 const fs = require('fs');
 const { resolve } = require('path');
 const path = require('path')
-
-const habitablePlanets = [];
+const planets = require('./planets.mongo')
 
 
  function loadPlanetsData(){
@@ -17,15 +16,17 @@ const habitablePlanets = [];
             columns: true
     
         }))
-        .on('data', (data)=>{
+        .on('data', async (data)=>{
             if(isHabitablePlanet(data))
-            habitablePlanets.push(data);
+            {
+                savePlanet(data)
+            }
+            //habitablePlanets.push(data);
         })
-        .on('end', ()=>{
-           habitablePlanets.map((planet) =>{
-                return planet['kepoi_name'];
-            });
-
+        .on('end', async ()=>{
+            const countPlanetsFound= (await getAllPlanets()).length;
+            console.log((await getAllPlanets()));
+            console.log(countPlanetsFound+" Planets have been found")
             resolve();
         })
         .on('error', (error)=>{
@@ -37,11 +38,6 @@ const habitablePlanets = [];
     })
 }
 
-//The parse function doesnt read the file itself
-
-
-
-
 function isHabitablePlanet(planet){
     return planet['koi_disposition']==='CONFIRMED' 
     && planet['koi_insol']> 0.36 &&planet['koi_insol']<1.11
@@ -49,8 +45,21 @@ function isHabitablePlanet(planet){
 
 }
 
-function getAllPlanets(){
-    return habitablePlanets;
+async function getAllPlanets(){
+    return await planets.find({},{
+        '_id':0,'__v':0
+    }); //Finds all planets
+}
+
+async function savePlanet(planet){
+        try{
+            const planetData= {keplerName : planet.keplerName}
+            await planets.updateOne(planetData,planetData,{upsert:true}) //Upsert, update if existing, add if unexited
+        }
+        catch(err){
+            console.error("Could not save Planet" +err)
+        }
+
 }
 
 module.exports = {
