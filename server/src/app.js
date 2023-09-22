@@ -10,7 +10,6 @@ const app = express();
 app.use(cors({origin:'http://localhost:3000'}));
 app.use(morgan('combined'))
 app.use(express.json()); // Middleware to procces data as JSON
-
 app.use('/v1', api)
 app.use(express.static(path.join(__dirname,'..','public')))
 app.get('/*', (req, res)=>{

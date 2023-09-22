@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
+require('dotenv').config();
 
-const password = "eOnD72tS0UtxjNAo"; 
-const uri = `mongodb+srv://nasa-api:${password}@clustersam.uydehtq.mongodb.net/nasa?retryWrites=true&w=majority`;
-
+const uri = process.env.MONGO_URL;
 
 mongoose.connection.on('open', ()=>{
     console.log("Running")
