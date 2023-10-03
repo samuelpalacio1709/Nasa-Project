@@ -9,8 +9,10 @@
     "watch": "concurrently \"npm run server\" \"npm run client\"",
     "test": "npm run test -- prefix server",
     "deploy": "npm run build --prefix client && concurrently \"npm run start --prefix server\"  \"start http://localhost:8000\"",
-    "deploy-cluster": "npm run build --prefix client && concurrently \"npm run cluster --prefix server\"  \"start http://localhost:8000\""
-
+    "deploy-cluster": "npm run build --prefix client && concurrently \"npm run cluster --prefix server\"  \"start http://localhost:8000\"",
+    "install-server": "npm install --prefix server",
+    "install-client": "npm install --prefix client",
+    "install": "npm run install-server && npm run install-client"
   },
   "keywords": [],
   "author": "",
